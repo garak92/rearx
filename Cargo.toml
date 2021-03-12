@@ -1,0 +1,12 @@
+[package]
+name = "searxcli"
+version = "0.1.0"
+authors = ["Elim Garak <garak92@protonmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version="1.0.124", features = ["derive"]}

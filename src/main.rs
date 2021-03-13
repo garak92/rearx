@@ -1,16 +1,17 @@
 #[macro_use]
 extern crate prettytable;
-use prettytable::{Cell, Row, Table};
+use prettytable::Table;
 use serde::{Deserialize, Serialize};
 use std::io::{stdin, stdout, Write};
 use std::process::Command;
-use termion::cursor;
+use structopt::StructOpt;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 
 fn main() {
-    match deserialize_json() {
+    let args = Arguments::from_args();
+    match deserialize_json(args.query) {
         Ok(data) => {
             let contents = create_table(data as RequestData);
             let stdin = stdin();
@@ -21,6 +22,27 @@ fn main() {
                     Key::Char('q') => break,
                     Key::Char('0') => {
                         open_result(0, &contents);
+                    }
+                    Key::Char('1') => {
+                        open_result(1, &contents);
+                    }
+                    Key::Char('2') => {
+                        open_result(2, &contents);
+                    }
+                    Key::Char('3') => {
+                        open_result(3, &contents);
+                    }
+                    Key::Char('4') => {
+                        open_result(4, &contents);
+                    }
+                    Key::Char('5') => {
+                        open_result(5, &contents);
+                    }
+                    Key::Char('6') => {
+                        open_result(6, &contents);
+                    }
+                    Key::Char('7') => {
+                        open_result(7, &contents);
                     }
                     _ => {}
                 }
@@ -33,12 +55,11 @@ fn main() {
     }
 
     #[tokio::main]
-    async fn deserialize_json() -> Result<RequestData, Box<dyn std::error::Error>> {
-        let resp = reqwest::get("https://searx.garudalinux.org/search?q=karl%20poppers&categories=general&format=json&lang=en&page=1")
-        .await?
-        .json::<RequestData>()
-        .await?;
-        //println!("{:#?}", resp.query);
+    async fn deserialize_json(query: String) -> Result<RequestData, Box<dyn std::error::Error>> {
+        let server = String::from("https://searx.garudalinux.org/search?q=");
+        let arguments = String::from("&categories=general&format=json&lang=en&pageno=1");
+        let request = [server, query, arguments].concat();
+        let resp = reqwest::get(request).await?.json::<RequestData>().await?;
         Ok(resp)
     }
 
@@ -57,6 +78,11 @@ fn main() {
         pretty_url: String,
     }
 
+    #[derive(StructOpt)]
+    struct Arguments {
+        query: String,
+    }
+
     fn open_result(num: usize, contents: &Vec<Content>) {
         Command::new("sh")
             .arg("xdg-open")
@@ -67,11 +93,11 @@ fn main() {
 
     fn create_table(data: RequestData) -> Vec<Content> {
         let contents: Vec<Content> = data.results;
-        let lenght = contents.len();
+        let lenght = 9;
         let mut table = Table::new();
         table.set_titles(row![b->"No", b->"Title", b->"Search Engine", b->"URL"]);
 
-        for i in 0..lenght {
+        for i in 0..lenght - 1 {
             table.add_row(row![
                 i,
                 contents[i].title,

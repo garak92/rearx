@@ -1,5 +1,5 @@
 [package]
-name = "Rearx"
+name = "rearx"
 version = "0.1.0"
 authors = ["Elim Garak <garak92@protonmail.com>"]
 edition = "2018"

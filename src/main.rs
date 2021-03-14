@@ -2,7 +2,7 @@
 extern crate prettytable;
 use prettytable::Table;
 use serde::{Deserialize, Serialize};
-use std::io::{stdin, stdout, Write};
+use std::io::stdin;
 use std::process::Command;
 use structopt::StructOpt;
 use termion::event::Key;
@@ -21,19 +21,19 @@ fn search(num: i32) {
             println!("Page: {}", num);
             let stdin = stdin();
             let terminal = std::io::stdout().into_raw_mode().unwrap();
-            terminal.activate_raw_mode();
+            terminal.activate_raw_mode().unwrap();
 
             for c in stdin.keys() {
                 match c.unwrap() {
                     Key::Char('q') => break,
                     Key::Right => {
-                        terminal.suspend_raw_mode();
+                        terminal.suspend_raw_mode().unwrap();
                         println!("{}", termion::clear::All);
                         search(num + 1);
                         break;
                     }
                     Key::Left => {
-                        terminal.suspend_raw_mode();
+                        terminal.suspend_raw_mode().unwrap();
                         println!("{}", termion::clear::All);
                         search(num - 1);
                         break;

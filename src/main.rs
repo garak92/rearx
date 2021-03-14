@@ -13,6 +13,7 @@ fn main() {
     search(1);
 }
 fn search(num: i32) {
+    println!("{}", termion::clear::All);
     let args = Arguments::from_args();
     match deserialize_json(args.query, num) {
         Ok(data) => {
@@ -25,9 +26,16 @@ fn search(num: i32) {
             for c in stdin.keys() {
                 match c.unwrap() {
                     Key::Char('q') => break,
-                    Key::Char('n') => {
+                    Key::Right => {
+                        terminal.suspend_raw_mode();
                         println!("{}", termion::clear::All);
                         search(num + 1);
+                        break;
+                    }
+                    Key::Left => {
+                        terminal.suspend_raw_mode();
+                        println!("{}", termion::clear::All);
+                        search(num - 1);
                         break;
                     }
                     Key::Char('0') => {

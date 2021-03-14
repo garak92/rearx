@@ -10,16 +10,26 @@ use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 
 fn main() {
+    search(1);
+}
+fn search(num: i32) {
     let args = Arguments::from_args();
-    match deserialize_json(args.query) {
+    match deserialize_json(args.query, num) {
         Ok(data) => {
             let contents = create_table(data as RequestData);
+            println!("Page: {}", num);
             let stdin = stdin();
-            let mut stdout = stdout().into_raw_mode().unwrap();
+            let terminal = std::io::stdout().into_raw_mode().unwrap();
+            terminal.activate_raw_mode();
 
             for c in stdin.keys() {
                 match c.unwrap() {
                     Key::Char('q') => break,
+                    Key::Char('n') => {
+                        println!("{}", termion::clear::All);
+                        search(num + 1);
+                        break;
+                    }
                     Key::Char('0') => {
                         open_result(0, &contents);
                     }
@@ -46,7 +56,6 @@ fn main() {
                     }
                     _ => {}
                 }
-                stdout.flush().unwrap();
             }
         }
         Err(e) => {
@@ -55,10 +64,14 @@ fn main() {
     }
 
     #[tokio::main]
-    async fn deserialize_json(query: String) -> Result<RequestData, Box<dyn std::error::Error>> {
+    async fn deserialize_json(
+        query: String,
+        num: i32,
+    ) -> Result<RequestData, Box<dyn std::error::Error>> {
+        let page_num = num.to_string();
         let server = String::from("https://searx.garudalinux.org/search?q=");
-        let arguments = String::from("&categories=general&format=json&lang=en&pageno=1");
-        let request = [server, query, arguments].concat();
+        let arguments = String::from("&categories=general&format=json&lang=en&pageno=");
+        let request = [server, query, arguments, page_num].concat();
         let resp = reqwest::get(request).await?.json::<RequestData>().await?;
         Ok(resp)
     }
@@ -106,6 +119,10 @@ fn main() {
             ]);
         }
         table.printstd();
+        println!(
+            "Query: {}\nSearch results: {}",
+            data.query, data.number_of_results
+        );
 
         return contents;
     }

@@ -62,6 +62,13 @@ fn search(num: i32) {
                     Key::Char('7') => {
                         open_result(7, &contents);
                     }
+                    Key::Char('8') => {
+                        open_result(8, &contents);
+                    }
+                    Key::Char('9') => {
+                        open_result(9, &contents);
+                    }
+
                     _ => {}
                 }
             }
@@ -114,17 +121,27 @@ fn search(num: i32) {
 
     fn create_table(data: RequestData) -> Vec<Content> {
         let contents: Vec<Content> = data.results;
-        let lenght = 9;
+        let lenght = contents.len();
         let mut table = Table::new();
         table.set_titles(row![b->"No", b->"Title", b->"Search Engine", b->"URL"]);
-
-        for i in 0..lenght - 1 {
-            table.add_row(row![
-                i,
-                contents[i].title,
-                contents[i].engine,
-                contents[i].pretty_url
-            ]);
+        if lenght <= 9 {
+            for i in 0..lenght {
+                table.add_row(row![
+                    i,
+                    contents[i].title,
+                    contents[i].engine,
+                    contents[i].pretty_url
+                ]);
+            }
+        } else {
+            for i in 0..9 {
+                table.add_row(row![
+                    i,
+                    contents[i].title,
+                    contents[i].engine,
+                    contents[i].pretty_url
+                ]);
+            }
         }
         table.printstd();
         println!(

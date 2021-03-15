@@ -12,8 +12,7 @@ use termion::raw::IntoRawMode;
 fn main() {
     search(1);
 }
-fn search(num: i32) {
-    println!("{}", termion::clear::All);
+fn search(mut num: i32) {
     let args = Arguments::from_args();
     match deserialize_json(args.query, num) {
         Ok(data) => {
@@ -28,14 +27,18 @@ fn search(num: i32) {
                     Key::Char('q') => break,
                     Key::Right => {
                         terminal.suspend_raw_mode().unwrap();
+                        num += 1;
                         println!("{}", termion::clear::All);
-                        search(num + 1);
+                        println!("Retrieving page {}...", num);
+                        search(num);
                         break;
                     }
                     Key::Left => {
                         terminal.suspend_raw_mode().unwrap();
+                        num -= 1;
                         println!("{}", termion::clear::All);
-                        search(num - 1);
+                        println!("Retrieving page {}...", num);
+                        search(num);
                         break;
                     }
                     Key::Char('0') => {
@@ -67,6 +70,14 @@ fn search(num: i32) {
                     }
                     Key::Char('9') => {
                         open_result(9, &contents);
+                    }
+                    Key::Char('f') => {
+                        terminal.suspend_raw_mode().unwrap();
+                        num = 1;
+                        println!("{}", termion::clear::All);
+                        println!("Returning to first page...");
+                        search(num);
+                        break;
                     }
 
                     _ => {}
@@ -114,7 +125,7 @@ fn search(num: i32) {
     fn open_result(num: usize, contents: &Vec<Content>) {
         Command::new("xdg-open")
             .arg(&contents[num].pretty_url)
-            .status()
+            .spawn()
             .expect("failed to execute process");
     }
 

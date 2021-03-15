@@ -17,7 +17,7 @@ fn search(mut num: i32) {
     match deserialize_json(args.query, num) {
         Ok(data) => {
             let contents = create_table(data as RequestData);
-            println!("Page: {}", num);
+            println!("PAGE: {}", num);
             let stdin = stdin();
             let terminal = std::io::stdout().into_raw_mode().unwrap();
             terminal.activate_raw_mode().unwrap();
@@ -133,29 +133,21 @@ fn search(mut num: i32) {
         let contents: Vec<Content> = data.results;
         let lenght = contents.len();
         let mut table = Table::new();
-        table.set_titles(row![b->"No", b->"Title", b->"Search Engine", b->"URL"]);
+        table.set_titles(row![b->"No", b->"Result"]);
         if lenght <= 9 {
             for i in 0..lenght {
-                table.add_row(row![
-                    i,
-                    contents[i].title,
-                    contents[i].engine,
-                    contents[i].pretty_url
-                ]);
+                table.add_row(row![bBbcFd->i, bBbcFd->contents[i].title]);
+                table.add_row(row![Fg->contents[i].pretty_url, Fg->contents[i].engine]);
             }
         } else {
             for i in 0..9 {
-                table.add_row(row![
-                    i,
-                    contents[i].title,
-                    contents[i].engine,
-                    contents[i].pretty_url
-                ]);
+                table.add_row(row![bBbcFd->i, bBbcFd->contents[i].title]);
+                table.add_row(row![Fg->contents[i].pretty_url, Fg->contents[i].engine]);
             }
         }
         table.printstd();
         println!(
-            "Query: {}\nSearch results: {}",
+            "QUERY: {}\nSEARCH RESULTS: {}",
             data.query, data.number_of_results
         );
 

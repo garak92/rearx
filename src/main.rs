@@ -1,6 +1,6 @@
 #[macro_use]
 extern crate prettytable;
-use prettytable::Table;
+use prettytable::{format, Table};
 use serde::{Deserialize, Serialize};
 use std::io::stdin;
 use std::process::Command;
@@ -118,6 +118,7 @@ fn search(mut num: i32) {
     }
 
     #[derive(StructOpt)]
+    #[structopt(about = "I am a program and I work, just pass `-h`")]
     struct Arguments {
         query: String,
     }
@@ -130,21 +131,35 @@ fn search(mut num: i32) {
     }
 
     fn create_table(data: RequestData) -> Vec<Content> {
+        let format = format::FormatBuilder::new()
+            .column_separator(' ')
+            .borders('|')
+            .padding(1, 1)
+            .separators(
+                &[format::LinePosition::Top, format::LinePosition::Bottom],
+                format::LineSeparator::new('-', '+', '+', '+'),
+            )
+            .build();
         let contents: Vec<Content> = data.results;
         let lenght = contents.len();
         let mut table = Table::new();
-        table.set_titles(row![b->"No", b->"Result"]);
+        //table.set_titles(row![Fbbc->"No", Fbbc->"Result"]);
         if lenght <= 9 {
             for i in 0..lenght {
-                table.add_row(row![bBbcFd->i, bBbcFd->contents[i].title]);
-                table.add_row(row![Fg->contents[i].pretty_url, Fg->contents[i].engine]);
+                table.add_row(row![bBbcFd->i]);
+                table.add_row(row![bBbcFd->contents[i].title]);
+                table.add_row(row![bBbcFd->contents[i].engine]);
+                table.add_row(row![Fbc->contents[i].pretty_url]);
             }
         } else {
             for i in 0..9 {
-                table.add_row(row![bBbcFd->i, bBbcFd->contents[i].title]);
-                table.add_row(row![Fg->contents[i].pretty_url, Fg->contents[i].engine]);
+                table.add_row(row![bBbcFd->i]);
+                table.add_row(row![bBbcFd->contents[i].title]);
+                table.add_row(row![bBbcFd->contents[i].engine]);
+                table.add_row(row![Fbc->contents[i].pretty_url]);
             }
         }
+        table.set_format(format);
         table.printstd();
         println!(
             "QUERY: {}\nSEARCH RESULTS: {}",

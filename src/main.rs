@@ -112,10 +112,9 @@ fn search(num: i32) {
     }
 
     fn open_result(num: usize, contents: &Vec<Content>) {
-        Command::new("sh")
-            .arg("xdg-open")
+        Command::new("xdg-open")
             .arg(&contents[num].pretty_url)
-            .output()
+            .status()
             .expect("failed to execute process");
     }
 

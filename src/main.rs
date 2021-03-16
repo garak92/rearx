@@ -4,6 +4,8 @@ extern crate prettytable;
 use request::deserialize_json;
 use request::Content;
 use request::RequestData;
+use serde_yaml;
+use std::env::var;
 use std::process::Command;
 use structopt::StructOpt;
 use table::create_table;
@@ -14,13 +16,15 @@ mod request;
 mod table;
 
 fn main() {
-    search(1); //Initialize search on page number 1
+    let host = read_yaml();
+    search(1, host); //Initialize search on page number 1
 }
-fn search(mut num: i32) {
+fn search(mut num: i32, host: String) {
     let args = Arguments::from_args(); //Gets the command line arguments from Arguments struct
     match deserialize_json(args.query, num) {
         Ok(data) => {
             let contents = create_table(data as RequestData);
+            println!("HOST: {}", host);
             println!("PAGE: {}", num);
             let stdin = stdin();
             let terminal = std::io::stdout().into_raw_mode().unwrap();
@@ -34,7 +38,7 @@ fn search(mut num: i32) {
                         num += 1;
                         println!("{}", termion::clear::All); //This clear is only for aesthetics
                         println!("Retrieving page {}...", num);
-                        search(num);
+                        search(num, host);
                         break;
                     }
                     Key::Left => {
@@ -42,7 +46,7 @@ fn search(mut num: i32) {
                         num -= 1;
                         println!("{}", termion::clear::All);
                         println!("Retrieving page {}...", num);
-                        search(num);
+                        search(num, host);
                         break;
                     }
                     Key::Char('0') => {
@@ -80,7 +84,7 @@ fn search(mut num: i32) {
                         num = 1;
                         println!("{}", termion::clear::All);
                         println!("Returning to first page...");
-                        search(num);
+                        search(num, host);
                         break;
                     }
 
@@ -92,19 +96,27 @@ fn search(mut num: i32) {
             println!("Error: {}", e);
         }
     }
+}
 
-    #[derive(StructOpt)]
-    #[structopt(
-        about = "Welcome to Rearx, a TUI client for the Searx meta-search engine, written in Rust!"
-    )]
-    struct Arguments {
-        query: String,
-    }
+#[derive(StructOpt)]
+#[structopt(
+    about = "Welcome to Rearx, a TUI client for the Searx meta-search engine, written in Rust!"
+)]
+struct Arguments {
+    query: String,
+}
 
-    fn open_result(num: usize, contents: &Vec<Content>) {
-        Command::new("xdg-open")
-            .arg(&contents[num].pretty_url)
-            .spawn()
-            .expect("failed to execute process");
-    }
+fn open_result(num: usize, contents: &Vec<Content>) {
+    Command::new("xdg-open")
+        .arg(&contents[num].pretty_url)
+        .spawn()
+        .expect("failed to execute process");
+}
+
+fn read_yaml() -> String {
+    let file = var("XDG_CONFIG_HOME")
+        .or_else(|_| var("HOME").map(|home| format!("{}/.config/rearx/rearx.yaml", home)));
+    let f = std::fs::File::open(file.unwrap()).unwrap();
+    let d: String = serde_yaml::from_reader(f).unwrap();
+    return d;
 }

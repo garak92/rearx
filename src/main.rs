@@ -118,7 +118,9 @@ fn search(mut num: i32) {
     }
 
     #[derive(StructOpt)]
-    #[structopt(about = "I am a program and I work, just pass `-h`")]
+    #[structopt(
+        about = "Welcome to Rearx, a TUI client for the Searx meta-search engine, written in Rust!"
+    )]
     struct Arguments {
         query: String,
     }
@@ -143,7 +145,6 @@ fn search(mut num: i32) {
         let contents: Vec<Content> = data.results;
         let lenght = contents.len();
         let mut table = Table::new();
-        //table.set_titles(row![Fbbc->"No", Fbbc->"Result"]);
         if lenght <= 9 {
             for i in 0..lenght {
                 table.add_row(row![bBbcFd->i]);

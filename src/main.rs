@@ -1,19 +1,23 @@
+use std::io::stdin;
 #[macro_use]
 extern crate prettytable;
-use prettytable::{format, Table};
-use serde::{Deserialize, Serialize};
-use std::io::stdin;
+use request::deserialize_json;
+use request::Content;
+use request::RequestData;
 use std::process::Command;
 use structopt::StructOpt;
+use table::create_table;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+mod request;
+mod table;
 
 fn main() {
-    search(1);
+    search(1); //Initialize search on page number 1
 }
 fn search(mut num: i32) {
-    let args = Arguments::from_args();
+    let args = Arguments::from_args(); //Gets the command line arguments from Arguments struct
     match deserialize_json(args.query, num) {
         Ok(data) => {
             let contents = create_table(data as RequestData);
@@ -26,9 +30,9 @@ fn search(mut num: i32) {
                 match c.unwrap() {
                     Key::Char('q') => break,
                     Key::Right => {
-                        terminal.suspend_raw_mode().unwrap();
+                        terminal.suspend_raw_mode().unwrap(); //Necessary for output not to be scrambled
                         num += 1;
-                        println!("{}", termion::clear::All);
+                        println!("{}", termion::clear::All); //This clear is only for aesthetics
                         println!("Retrieving page {}...", num);
                         search(num);
                         break;
@@ -89,34 +93,6 @@ fn search(mut num: i32) {
         }
     }
 
-    #[tokio::main]
-    async fn deserialize_json(
-        query: String,
-        num: i32,
-    ) -> Result<RequestData, Box<dyn std::error::Error>> {
-        let page_num = num.to_string();
-        let server = String::from("https://searx.garudalinux.org/search?q=");
-        let arguments = String::from("&categories=general&format=json&lang=en&pageno=");
-        let request = [server, query, arguments, page_num].concat();
-        let resp = reqwest::get(request).await?.json::<RequestData>().await?;
-        Ok(resp)
-    }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    struct RequestData {
-        query: String,
-        number_of_results: f32,
-        results: Vec<Content>,
-    }
-
-    #[derive(Serialize, Deserialize, Debug)]
-    struct Content {
-        title: String,
-        engine: String,
-        content: String,
-        pretty_url: String,
-    }
-
     #[derive(StructOpt)]
     #[structopt(
         about = "Welcome to Rearx, a TUI client for the Searx meta-search engine, written in Rust!"
@@ -130,43 +106,5 @@ fn search(mut num: i32) {
             .arg(&contents[num].pretty_url)
             .spawn()
             .expect("failed to execute process");
-    }
-
-    fn create_table(data: RequestData) -> Vec<Content> {
-        let format = format::FormatBuilder::new()
-            .column_separator(' ')
-            .borders('|')
-            .padding(1, 1)
-            .separators(
-                &[format::LinePosition::Top, format::LinePosition::Bottom],
-                format::LineSeparator::new('-', '+', '+', '+'),
-            )
-            .build();
-        let contents: Vec<Content> = data.results;
-        let lenght = contents.len();
-        let mut table = Table::new();
-        if lenght <= 9 {
-            for i in 0..lenght {
-                table.add_row(row![bBbcFd->i]);
-                table.add_row(row![bBbcFd->contents[i].title]);
-                table.add_row(row![bBbcFd->contents[i].engine]);
-                table.add_row(row![Fbc->contents[i].pretty_url]);
-            }
-        } else {
-            for i in 0..9 {
-                table.add_row(row![bBbcFd->i]);
-                table.add_row(row![bBbcFd->contents[i].title]);
-                table.add_row(row![bBbcFd->contents[i].engine]);
-                table.add_row(row![Fbc->contents[i].pretty_url]);
-            }
-        }
-        table.set_format(format);
-        table.printstd();
-        println!(
-            "QUERY: {}\nSEARCH RESULTS: {}",
-            data.query, data.number_of_results
-        );
-
-        return contents;
     }
 }

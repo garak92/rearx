@@ -12,6 +12,9 @@ q -> Quit
 
 # Installation
 An AUR package is on its way, but for now you have to compile the code using cargo build --release
+Then, you need to create the folder ~/.config/rearx/ and put the rearx.yaml configuration file there.
+Inside this file, you can change the Searx instance you are using. 
+WARNING: bear in mind that, if the Searx instance you are connecting to has very strict firewall rules regarding json, Rearx will panic! on "rate limit exceeded"
 
 # Platforms
 Only Linux is officially supported. Windows support is not planned nor possible because the program depends on the termion crate. It might compile on MacOS, but you are on your own.

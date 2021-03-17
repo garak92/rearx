@@ -11,9 +11,11 @@ f -> Go to first page\
 q -> Quit
 
 # Installation
-An AUR package is on its way, but for now you have to compile the code using cargo build --release
-Then, you need to create the folder ~/.config/rearx/ and put the rearx.yaml configuration file there.
-Inside this file, you can change the Searx instance you are using. 
+On Arch Linux and derivatives, you can install from the AUR like this: yay -S rearx
+On other distros you can install from source by cloning this repo and executing cargo build --release (the only requirement here is to have cargo installed)
+
+Configuration file (mandatory):
+After installation, you need to create the folder ~/.config/rearx/ and put the rearx.yaml configuration file there. Inside this file, you can change the Searx instance you are using. 
 WARNING: bear in mind that, if the Searx instance you are connecting to has very strict firewall rules regarding json, Rearx will panic! on "rate limit exceeded"
 
 # Platforms

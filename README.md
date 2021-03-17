@@ -5,10 +5,10 @@ A TUI client for the Searx meta-search engine, written in Rust
 Write rearx + "search query" on your terminal.
 
 # Keybinds
-Right arrow -> Go to next page
-Left arrow -> Go to previous page
-f -> Go to first page
-q -> Quit
+Right arrow -> Go to next page\
+Left arrow -> Go to previous page\
+f -> Go to first page\
+q -> Quit\
 
 # Installation
 An AUR package is on its way, but for now you have to compile the code using cargo build --release

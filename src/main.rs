@@ -1,11 +1,7 @@
 use std::io::stdin;
 #[macro_use]
 extern crate prettytable;
-use request::deserialize_json;
-use request::Content;
-use request::RequestData;
-use serde_yaml;
-use std::env::var;
+use request::{deserialize_json, read_yaml, Content, RequestData};
 use std::process::Command;
 use structopt::StructOpt;
 use table::create_table;
@@ -111,12 +107,4 @@ fn open_result(num: usize, contents: &Vec<Content>) {
         .arg(&contents[num].url)
         .spawn()
         .expect("failed to execute process");
-}
-
-fn read_yaml() -> String {
-    let file = var("XDG_CONFIG_HOME")
-        .or_else(|_| var("HOME").map(|home| format!("{}/.config/rearx/rearx.yaml", home)));
-    let f = std::fs::File::open(file.unwrap()).unwrap();
-    let d: String = serde_yaml::from_reader(f).unwrap();
-    return d;
 }

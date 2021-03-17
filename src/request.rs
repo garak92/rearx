@@ -1,3 +1,4 @@
+use reqwest::get;
 use serde::{Deserialize, Serialize};
 use std::env::var;
 //This module sends a request to a Searx instance, gets a json response, and deserializes it into two structs
@@ -12,11 +13,15 @@ pub async fn deserialize_json(
     server.push_str("search?q=");
     let arguments = String::from("&categories=general&format=json&lang=en&pageno=");
     let request = [server, query, arguments, page_num].concat();
-    let resp = reqwest::get(request).await?.json::<RequestData>().await?;
+    let resp = get(&request)
+        .await?
+        .json::<RequestData>()
+        .await
+        .expect(&get(&request).await?.text().await? as &str);
     Ok(resp)
 }
 
-fn read_yaml() -> String {
+pub fn read_yaml() -> String {
     let file = var("XDG_CONFIG_HOME")
         .or_else(|_| var("HOME").map(|home| format!("{}/.config/rearx/rearx.yaml", home)));
     let f = std::fs::File::open(file.unwrap()).unwrap();

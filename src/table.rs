@@ -20,14 +20,14 @@ pub fn create_table(data: RequestData) -> Vec<Content> {
             table.add_row(row![bBbcFd->i]);
             table.add_row(row![bBbcFd->contents[i].title]);
             table.add_row(row![bBbcFd->contents[i].engine]);
-            table.add_row(row![Fbc->contents[i].pretty_url]);
+            table.add_row(row![Fbc->contents[i].url]);
         }
     } else {
         for i in 0..9 {
             table.add_row(row![bBbcFd->i]);
             table.add_row(row![bBbcFd->contents[i].title]);
             table.add_row(row![bBbcFd->contents[i].engine]);
-            table.add_row(row![Fbc->contents[i].pretty_url]);
+            table.add_row(row![Fbc->contents[i].url]);
         }
     }
     table.set_format(format); //Applies format

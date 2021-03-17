@@ -108,7 +108,7 @@ struct Arguments {
 
 fn open_result(num: usize, contents: &Vec<Content>) {
     Command::new("xdg-open")
-        .arg(&contents[num].pretty_url)
+        .arg(&contents[num].url)
         .spawn()
         .expect("failed to execute process");
 }

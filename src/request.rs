@@ -36,5 +36,5 @@ pub struct Content {
     pub title: String,
     pub engine: String,
     pub content: String,
-    pub pretty_url: String,
+    pub url: String,
 }

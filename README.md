@@ -8,7 +8,7 @@ Write rearx + "search query" on your terminal.
 Right arrow -> Go to next page\
 Left arrow -> Go to previous page\
 f -> Go to first page\
-q -> Quit
+q -> Quit\
 [0-9] -> opens the search result corresponding to the pressed number key
 
 

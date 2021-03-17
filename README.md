@@ -8,7 +8,7 @@ Write rearx + "search query" on your terminal.
 Right arrow -> Go to next page\
 Left arrow -> Go to previous page\
 f -> Go to first page\
-q -> Quit\
+q -> Quit
 
 # Installation
 An AUR package is on its way, but for now you have to compile the code using cargo build --release

@@ -16,9 +16,11 @@ fn main() {
     search(1, host); //Initialize search on page number 1
 }
 fn search(mut num: i32, host: String) {
+    println!("Retrieving page {}...", num);
     let args = Arguments::from_args(); //Gets the command line arguments from Arguments struct
     match deserialize_json(args.query, num) {
         Ok(data) => {
+            println!("{}", termion::clear::BeforeCursor); //Clears like this are only there for aesthetics
             let contents = create_table(data as RequestData);
             println!("HOST: {}", host);
             println!("PAGE: {}", num);
@@ -32,8 +34,7 @@ fn search(mut num: i32, host: String) {
                     Key::Right => {
                         terminal.suspend_raw_mode().unwrap(); //Necessary for output not to be scrambled
                         num += 1;
-                        println!("{}", termion::clear::All); //This clear is only for aesthetics
-                        println!("Retrieving page {}...", num);
+                        println!("{}", termion::clear::All);
                         search(num, host);
                         break;
                     }

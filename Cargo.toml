@@ -6,6 +6,7 @@ edition = "2018"
 license = "GPL v3.0"
 repository = "https://github.com/garak92/rearx"
 description = "A TUI client for the Searx meta-engine, written in Rust"
+homepage = "https://github.com/garak92/rearx"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

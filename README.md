@@ -18,7 +18,7 @@ On Arch Linux and derivatives, you can install from the AUR like this: yay -S re
 On other distros you can install from source by cloning this repo and executing cargo build --release (the only requirement here is to have cargo installed)
 
 Mandatory:
-In order to use Rearx, you first need to create the folder /etc/rearx/ and copy the rearx.yaml configuration file in there. Inside this file, you specify which instance of Searxyou will connect to\
+In order to use Rearx, you first need to create the folder /etc/rearx/ and copy the rearx.yaml configuration file in there. Inside this file, you specify which instance of Searxyou will connect to
 
 WARNING: bear in mind that, if the Searx instance you are connecting to has very strict firewall rules regarding json, Rearx will panic! on "rate limit exceeded"
 

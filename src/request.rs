@@ -1,6 +1,5 @@
 use reqwest::get;
 use serde::{Deserialize, Serialize};
-use std::env::var;
 //This module sends a request to a Searx instance, gets a json response, and deserializes it into two structs
 
 #[tokio::main]
@@ -22,10 +21,10 @@ pub async fn deserialize_json(
 }
 
 pub fn read_yaml() -> String {
-    let file = var("XDG_CONFIG_HOME")
-        .or_else(|_| var("HOME").map(|home| format!("{}/.config/rearx/rearx.yaml", home)));
-    let f = std::fs::File::open(file.unwrap()).unwrap();
-    let d: String = serde_yaml::from_reader(f).unwrap();
+    let path = "/etc/rearx/rearx.yaml";
+    let f = std::fs::File::open(path).expect("Failed to read config file on /etc/rearx/rearx.yaml");
+    let d: String = serde_yaml::from_reader(f)
+        .expect("Could not parse rearx.yaml, perhaps bad syntax or empty");
     return d;
 }
 

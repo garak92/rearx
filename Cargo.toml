@@ -3,6 +3,10 @@ name = "rearx"
 version = "0.1.0"
 authors = ["Elim Garak <garak92@protonmail.com>"]
 edition = "2018"
+license = "GPL v3.0"
+repository = "https://github.com/garak92/rearx"
+description = "A TUI client for the Searx meta-engine, written in Rust"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

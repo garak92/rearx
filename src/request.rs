@@ -23,8 +23,9 @@ pub async fn deserialize_json(
 pub fn read_yaml() -> String {
     let path = "/etc/rearx/rearx.yaml";
     let f = std::fs::File::open(path).expect("Failed to read config file on /etc/rearx/rearx.yaml");
-    let d: String = serde_yaml::from_reader(f)
-        .expect("Could not parse rearx.yaml, perhaps bad syntax or empty");
+    let d: String = serde_yaml::from_reader(f).expect(
+        "Could not parse rearx.yaml, perhaps bad syntax or you didn't specify any Searx instance",
+    );
     return d;
 }
 

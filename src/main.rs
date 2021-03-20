@@ -18,8 +18,8 @@ fn main() {
     search(1, host); //Initialize search on page number 1
 }
 fn search(mut num: i32, host: String) {
-    println!("Retrieving page {}...", num);
     let args = Arguments::from_args(); //Gets the command line arguments from Arguments struct
+    println!("Retrieving page {}...", num);
     match deserialize_json(args.query, num) {
         Ok(data) => {
             println!("{}", termion::clear::BeforeCursor); //Clears like this are only there for aesthetics

@@ -1,3 +1,4 @@
+use gag::Gag;
 use std::io::stdin;
 #[macro_use]
 extern crate prettytable;
@@ -105,9 +106,10 @@ struct Arguments {
 }
 
 fn open_result(num: usize, contents: &Vec<Content>) {
+    let _stderr_gag = Gag::stderr().unwrap(); //Redirect standard error to /dev/null
     Command::new("xdg-open")
         .arg(&contents[num].url)
         .stdout(Stdio::null())
-        .output()
+        .spawn()
         .expect("failed to execute process");
 }

@@ -2,7 +2,7 @@ use std::io::stdin;
 #[macro_use]
 extern crate prettytable;
 use request::{deserialize_json, read_yaml, Content, RequestData};
-use std::process::Command;
+use std::process::{Command, Stdio};
 use structopt::StructOpt;
 use table::create_table;
 use termion::event::Key;
@@ -12,6 +12,7 @@ mod request;
 mod table;
 
 fn main() {
+    println!("{}", termion::cursor::Hide);
     let host = read_yaml();
     search(1, host); //Initialize search on page number 1
 }
@@ -106,6 +107,7 @@ struct Arguments {
 fn open_result(num: usize, contents: &Vec<Content>) {
     Command::new("xdg-open")
         .arg(&contents[num].url)
-        .spawn()
+        .stdout(Stdio::null())
+        .output()
         .expect("failed to execute process");
 }

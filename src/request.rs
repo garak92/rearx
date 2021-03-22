@@ -42,6 +42,6 @@ pub struct RequestData {
 pub struct Content {
     pub title: String,
     pub engine: String,
-    pub content: String,
+    pub content: Option<String>,
     pub url: String,
 }

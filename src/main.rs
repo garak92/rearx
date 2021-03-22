@@ -107,9 +107,14 @@ struct Arguments {
 
 fn open_result(num: usize, contents: &Vec<Content>) {
     let _stderr_gag = Gag::stderr().unwrap(); //Redirect standard error to /dev/null
-    Command::new("xdg-open")
-        .arg(&contents[num].url)
-        .stdout(Stdio::null())
-        .spawn()
-        .expect("failed to execute process");
+    match contents.get(num) {
+        Some(x) => {
+            Command::new("xdg-open")
+                .arg(&x.url)
+                .stdout(Stdio::null())
+                .spawn()
+                .expect("failed to execute process");
+        }
+        None => {}
+    }
 }

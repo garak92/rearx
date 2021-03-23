@@ -13,11 +13,11 @@ mod request;
 mod table;
 
 fn main() {
-    println!("{}", termion::cursor::Hide);
     let host = read_yaml();
     search(1, host); //Initialize search on page number 1
 }
 fn search(mut num: i32, host: String) {
+    println!("{}", termion::cursor::Hide);
     let args = Arguments::from_args(); //Gets the command line arguments from Arguments struct
     println!("Retrieving page {}...", num);
     match deserialize_json(args.query, num) {
@@ -32,7 +32,10 @@ fn search(mut num: i32, host: String) {
 
             for c in stdin.keys() {
                 match c.unwrap() {
-                    Key::Char('q') => break,
+                    Key::Char('q') => {
+                        println!("{}", termion::cursor::Show);
+                        break;
+                    }
                     Key::Right => {
                         terminal.suspend_raw_mode().unwrap(); //Necessary for output not to be scrambled
                         num += 1;
